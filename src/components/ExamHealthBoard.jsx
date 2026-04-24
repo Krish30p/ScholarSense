@@ -1,49 +1,40 @@
 import React from 'react';
 import { BarChart, Bar, ResponsiveContainer, Tooltip, XAxis, Cell } from 'recharts';
 
-/**
- * Component to display exam health metrics and a bar chart for a single subject.
- * 
- * @param {Object} props
- * @param {Object} props.health - Exam health data for a subject.
- * @returns {JSX.Element}
- */
 const SubjectCard = ({ health }) => {
   const chartData = [
-    { name: 'Pass', count: health.pass_count, fill: '#4ade80' }, // green-400
-    { name: 'Fail', count: health.fail_count, fill: '#ef4444' }  // red-500
+    { name: 'Pass', count: health.pass_count, fill: '#00E676' }, // accent-green
+    { name: 'Fail', count: health.fail_count, fill: '#FF3B3B' }  // accent-red
   ];
 
   const badgeColorClass = {
-    'red': 'bg-red-900/40 text-red-400 border-red-800/60',
-    'amber': 'bg-amber-900/40 text-amber-400 border-amber-800/60',
-    'orange': 'bg-orange-900/40 text-orange-400 border-orange-800/60',
-    'green': 'bg-green-900/40 text-green-400 border-green-800/60',
-  }[health.color] || 'bg-gray-800 text-gray-400 border-gray-700';
+    'red': 'bg-void text-accent-red border-accent-red',
+    'amber': 'bg-void text-accent-amber border-accent-amber',
+    'orange': 'bg-void text-accent-amber border-accent-amber',
+    'green': 'bg-void text-accent-green border-accent-green',
+  }[health.color] || 'bg-void text-text-muted border-border';
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg p-5 flex flex-col">
+    <div className="bg-surface border border-border p-5 flex flex-col">
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-lg font-medium text-white">{health.subject}</h3>
-        <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-sm border ${badgeColorClass}`}>
+        <h3 className="text-xl font-bebas tracking-wide text-text-primary uppercase">{health.subject}</h3>
+        <span className={`text-[10px] font-mono uppercase font-bold tracking-wider px-2 py-1 border ${badgeColorClass}`}>
           {health.status}
         </span>
       </div>
       
-      <div className="flex items-end gap-3 mb-6">
-        <div>
-          <span className="text-4xl font-semibold tabular-nums text-white">{health.mean.toFixed(1)}</span>
-          <span className="text-gray-500 text-sm ml-1">μ</span>
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="flex justify-between items-end border-b border-border pb-2">
+          <span className="text-text-muted text-xs font-mono uppercase">Average</span>
+          <span className="text-3xl font-mono text-text-primary">{health.mean.toFixed(1)}</span>
         </div>
-        <div className="flex gap-3 pb-1 text-xs">
-          <div>
-            <span className="text-gray-500 mr-1">σ</span>
-            <span className="tabular-nums text-gray-300 font-medium">{health.std_dev.toFixed(1)}</span>
-          </div>
-          <div>
-            <span className="text-gray-500 mr-1">Pass</span>
-            <span className="tabular-nums text-gray-300 font-medium">{health.pass_pct}%</span>
-          </div>
+        <div className="flex justify-between items-end border-b border-border pb-2">
+          <span className="text-text-muted text-xs font-mono uppercase">Std Dev</span>
+          <span className="text-lg font-mono text-text-primary">{health.std_dev.toFixed(1)}</span>
+        </div>
+        <div className="flex justify-between items-end border-b border-border pb-2">
+          <span className="text-text-muted text-xs font-mono uppercase">Pass Rate</span>
+          <span className="text-lg font-mono text-text-primary">{health.pass_pct}%</span>
         </div>
       </div>
 
@@ -51,12 +42,12 @@ const SubjectCard = ({ health }) => {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
             <Tooltip 
-              cursor={{ fill: 'rgba(255, 255, 255, 0.03)' }}
-              contentStyle={{ backgroundColor: '#030712', borderColor: '#1f2937', color: '#f3f4f6', borderRadius: '0.375rem', fontSize: '0.875rem' }}
-              itemStyle={{ color: '#f3f4f6' }}
+              cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+              contentStyle={{ backgroundColor: '#0A0B0D', borderColor: '#2A2D35', color: '#F0F0F0', borderRadius: '0', fontSize: '0.75rem', fontFamily: 'IBM Plex Mono' }}
+              itemStyle={{ color: '#F0F0F0' }}
             />
             <XAxis dataKey="name" hide />
-            <Bar dataKey="count" radius={[2, 2, 0, 0]} maxBarSize={40}>
+            <Bar dataKey="count" radius={[0, 0, 0, 0]} maxBarSize={40}>
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}
@@ -68,20 +59,15 @@ const SubjectCard = ({ health }) => {
   );
 };
 
-/**
- * Grid component for all subject cards.
- * 
- * @param {Object} props
- * @param {Array} props.examHealth - Array of exam health objects.
- * @returns {JSX.Element}
- */
 export function ExamHealthBoard({ examHealth }) {
   if (!examHealth || examHealth.length === 0) return null;
 
   return (
-    <div className="mb-8">
-      <h2 className="text-lg font-medium text-white mb-4">Exam Health</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+    <div className="mb-8 border border-border bg-panel p-6">
+      <div className="border-b border-border pb-3 mb-6">
+        <h2 className="text-xl font-bebas tracking-widest text-text-primary uppercase">Subject Telemetry</h2>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         {examHealth.map((health) => (
           <SubjectCard key={health.subject} health={health} />
         ))}
