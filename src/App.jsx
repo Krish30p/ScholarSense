@@ -23,7 +23,7 @@ export default function App() {
             <div className="bg-cyan-500/10 p-1.5 rounded-md border border-cyan-500/20">
               <Database className="w-5 h-5 text-cyan-400" />
             </div>
-            <h1 className="text-lg font-semibold tracking-wide text-gray-50">Academic Agent</h1>
+            <h1 className="text-lg font-semibold tracking-wide text-gray-50">ScholarSense</h1>
           </div>
           
           <div className="flex items-center">
