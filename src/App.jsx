@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Upload, Users, BarChart2, Settings } from 'lucide-react';
-import { mockData } from './components/MockData';
+import { LayoutDashboard, Upload, Users, BarChart2, Settings, AlertCircle } from 'lucide-react';
+import { useAnalyze } from './hooks/useAnalyze';
 import { UploadZone } from './components/UploadZone';
 import { SummaryCards } from './components/SummaryCards';
 import { ExamHealthBoard } from './components/ExamHealthBoard';
 import { InterventionRoster } from './components/InterventionRoster';
 
 export default function App() {
+  const { status, data, error, analyzeFile } = useAnalyze();
   const [time, setTime] = useState('');
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export default function App() {
             <span className="font-mono text-[12px] text-muted">{time}</span>
             <div className="flex items-center gap-1.5">
               <span className="text-green text-[11px] font-bold animate-blink leading-none mt-0.5">|</span>
-              <span className="text-[11px] text-green uppercase tracking-wider">System Online</span>
+              <span className="text-[11px] text-green uppercase tracking-wider">System Ready</span>
             </div>
           </div>
         </header>
@@ -68,25 +69,49 @@ export default function App() {
         <main className="flex-1 overflow-y-auto bg-background p-6">
           <div className="max-w-[1400px] mx-auto grid grid-cols-12 gap-4">
             
-            {/* Upload Zone */}
-            <div className="col-span-12">
-              <UploadZone />
-            </div>
+            {/* Status / Error row (spans 12) */}
+            {error && (
+              <div className="col-span-12 p-4 bg-background border border-red flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="text-[13px] font-bold font-mono text-red uppercase">Analysis Failed</h3>
+                  <p className="text-[12px] font-mono text-muted mt-1">{error}</p>
+                </div>
+              </div>
+            )}
 
-            {/* Summary Cards */}
-            <div className="col-span-12">
-              <SummaryCards data={mockData.summary} />
-            </div>
+            {(status === 'idle' || status === 'error') && (
+              <div className="col-span-12">
+                <UploadZone onFileDrop={analyzeFile} />
+              </div>
+            )}
 
-            {/* Exam Health Board */}
-            <div className="col-span-12">
-              <ExamHealthBoard distribution={mockData.distribution} health={mockData.health} />
-            </div>
+            {status === 'uploading' && (
+              <div className="col-span-12 flex flex-col items-center justify-center h-[240px] border border-dashed border-subtle">
+                <div className="font-mono text-[14px] text-primary uppercase tracking-widest animate-pulse">
+                  ANALYZING DATA...
+                </div>
+              </div>
+            )}
 
-            {/* Intervention Roster */}
-            <div className="col-span-12">
-              <InterventionRoster students={mockData.students} />
-            </div>
+            {status === 'success' && data && (
+              <>
+                {/* Summary Cards */}
+                <div className="col-span-12">
+                  <SummaryCards data={data.summary} />
+                </div>
+
+                {/* Exam Health Board */}
+                <div className="col-span-12">
+                  <ExamHealthBoard distribution={data.distribution} health={data.health} />
+                </div>
+
+                {/* Intervention Roster */}
+                <div className="col-span-12">
+                  <InterventionRoster students={data.students} />
+                </div>
+              </>
+            )}
 
           </div>
         </main>

@@ -16,8 +16,8 @@ export function ExamHealthBoard({ distribution, health }) {
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-sans text-[11px] text-muted uppercase tracking-wider">SCORE DISTRIBUTION</h3>
           <div className="flex items-center gap-1.5">
-            <span className={`text-[11px] font-mono leading-none ${health.status === 'POLARIZED' ? 'text-red' : 'text-green'}`}>●</span>
-            <span className={`text-[11px] font-mono ${health.status === 'POLARIZED' ? 'text-red' : 'text-green'}`}>{health.status}</span>
+            <span className={`text-[11px] font-mono leading-none ${health.status === 'MIXED RESULTS' ? 'text-red' : 'text-green'}`}>●</span>
+            <span className={`text-[11px] font-mono ${health.status === 'MIXED RESULTS' ? 'text-red' : 'text-green'}`}>{health.status}</span>
           </div>
         </div>
         <div className="flex-1 w-full h-full">
@@ -48,7 +48,7 @@ export function ExamHealthBoard({ distribution, health }) {
       {/* Right 4-col */}
       <div className="col-span-4 bg-panel border border-bordercol flex flex-col">
         <div className="p-4 border-b border-bordercol">
-          <h3 className="font-sans text-[11px] text-muted uppercase tracking-wider">HEALTH TELEMETRY</h3>
+          <h3 className="font-sans text-[11px] text-muted uppercase tracking-wider">CLASS STATISTICS</h3>
         </div>
         <div className="flex flex-col flex-1 px-4 py-2">
           <div className="flex justify-between items-center py-3 border-b border-bordercol">

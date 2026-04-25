@@ -5,7 +5,7 @@ export function SummaryCards({ data }) {
     { label: 'CLASS MEAN', value: data.mean.toFixed(1), delta: '+2.4', deltaPositive: true },
     { label: 'STD DEVIATION', value: data.std_dev.toFixed(1), delta: '-1.2', deltaPositive: false },
     { label: 'PASS RATE', value: `${data.pass_rate}%`, delta: '+5.1', deltaPositive: true },
-    { label: 'AT-RISK COUNT', value: data.at_risk_count, delta: '▼2', deltaPositive: true } // lower is better
+    { label: 'NEEDS SUPPORT', value: data.at_risk_count, delta: '▼2', deltaPositive: true } // lower is better
   ];
 
   return (
