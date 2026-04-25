@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Upload, Users, BarChart2, Settings, AlertCircle } from 'lucide-react';
+import { LayoutDashboard, Upload, Users, BarChart2, Settings, AlertCircle, BookOpen } from 'lucide-react';
 import { useAnalyze } from './hooks/useAnalyze';
 import { UploadZone } from './components/UploadZone';
 import { SummaryCards } from './components/SummaryCards';
 import { ExamHealthBoard } from './components/ExamHealthBoard';
 import { InterventionRoster } from './components/InterventionRoster';
+import { Glossary } from './components/Glossary';
 
 export default function App() {
   const { status, data, error, analyzeFile } = useAnalyze();
   const [time, setTime] = useState('');
+  const [activeView, setActiveView] = useState('dashboard');
 
   useEffect(() => {
     const updateTime = () => {
@@ -28,7 +30,11 @@ export default function App() {
       {/* 64px Sidebar */}
       <aside className="w-[64px] bg-sidebar border-r border-bordercol flex flex-col items-center py-6 shrink-0 z-20 justify-between">
         <nav className="flex flex-col gap-6 w-full items-center">
-          <button className="text-primary border-l-2 border-primary w-full flex justify-center py-2" title="Dashboard">
+          <button 
+            className={`w-full flex justify-center py-2 border-l-2 transition-colors ${activeView === 'dashboard' ? 'text-primary border-primary' : 'text-muted hover:text-primary border-transparent'}`} 
+            title="Dashboard"
+            onClick={() => setActiveView('dashboard')}
+          >
             <LayoutDashboard className="w-5 h-5" />
           </button>
           <button className="text-muted hover:text-primary transition-colors border-l-2 border-transparent w-full flex justify-center py-2" title="Upload">
@@ -42,6 +48,13 @@ export default function App() {
           </button>
           <button className="text-muted hover:text-primary transition-colors border-l-2 border-transparent w-full flex justify-center py-2" title="Settings">
             <Settings className="w-5 h-5" />
+          </button>
+          <button 
+            className={`w-full flex justify-center py-2 border-l-2 transition-colors ${activeView === 'glossary' ? 'text-primary border-primary' : 'text-muted hover:text-primary border-transparent'}`} 
+            title="Terminology Guide"
+            onClick={() => setActiveView('glossary')}
+          >
+            <BookOpen className="w-5 h-5" />
           </button>
         </nav>
         <div className="mt-auto">
@@ -69,47 +82,55 @@ export default function App() {
         <main className="flex-1 overflow-y-auto bg-background p-6">
           <div className="max-w-[1400px] mx-auto grid grid-cols-12 gap-4">
             
-            {/* Status / Error row (spans 12) */}
-            {error && (
-              <div className="col-span-12 p-4 bg-background border border-red flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="text-[13px] font-bold font-mono text-red uppercase">Analysis Failed</h3>
-                  <p className="text-[12px] font-mono text-muted mt-1">{error}</p>
-                </div>
-              </div>
-            )}
-
-            {(status === 'idle' || status === 'error') && (
+            {activeView === 'glossary' ? (
               <div className="col-span-12">
-                <UploadZone onFileDrop={analyzeFile} />
+                <Glossary />
               </div>
-            )}
-
-            {status === 'uploading' && (
-              <div className="col-span-12 flex flex-col items-center justify-center h-[240px] border border-dashed border-subtle">
-                <div className="font-mono text-[14px] text-primary uppercase tracking-widest animate-pulse">
-                  ANALYZING DATA...
-                </div>
-              </div>
-            )}
-
-            {status === 'success' && data && (
+            ) : (
               <>
-                {/* Summary Cards */}
-                <div className="col-span-12">
-                  <SummaryCards data={data.summary} />
-                </div>
+                {/* Status / Error row (spans 12) */}
+                {error && (
+                  <div className="col-span-12 p-4 bg-background border border-red flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-red shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="text-[13px] font-bold font-mono text-red uppercase">Analysis Failed</h3>
+                      <p className="text-[12px] font-mono text-muted mt-1">{error}</p>
+                    </div>
+                  </div>
+                )}
 
-                {/* Exam Health Board */}
-                <div className="col-span-12">
-                  <ExamHealthBoard distribution={data.distribution} health={data.health} />
-                </div>
+                {(status === 'idle' || status === 'error') && (
+                  <div className="col-span-12">
+                    <UploadZone onFileDrop={analyzeFile} />
+                  </div>
+                )}
 
-                {/* Intervention Roster */}
-                <div className="col-span-12">
-                  <InterventionRoster students={data.students} />
-                </div>
+                {status === 'uploading' && (
+                  <div className="col-span-12 flex flex-col items-center justify-center h-[240px] border border-dashed border-subtle">
+                    <div className="font-mono text-[14px] text-primary uppercase tracking-widest animate-pulse">
+                      ANALYZING DATA...
+                    </div>
+                  </div>
+                )}
+
+                {status === 'success' && data && (
+                  <>
+                    {/* Summary Cards */}
+                    <div className="col-span-12">
+                      <SummaryCards data={data.summary} />
+                    </div>
+
+                    {/* Exam Health Board */}
+                    <div className="col-span-12">
+                      <ExamHealthBoard distribution={data.distribution} health={data.health} />
+                    </div>
+
+                    {/* Intervention Roster */}
+                    <div className="col-span-12">
+                      <InterventionRoster students={data.students} />
+                    </div>
+                  </>
+                )}
               </>
             )}
 
