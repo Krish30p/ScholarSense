@@ -53,5 +53,11 @@ export function useAnalyze() {
     }
   };
 
-  return { status, data, error, analyzeFile };
+  const reset = () => {
+    setStatus('idle');
+    setData(null);
+    setError(null);
+  };
+
+  return { status, data, error, analyzeFile, reset };
 }

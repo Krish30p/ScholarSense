@@ -8,7 +8,7 @@ import { InterventionRoster } from './components/InterventionRoster';
 import { Glossary } from './components/Glossary';
 
 export default function App() {
-  const { status, data, error, analyzeFile } = useAnalyze();
+  const { status, data, error, analyzeFile, reset } = useAnalyze();
   const [time, setTime] = useState('');
   const [activeView, setActiveView] = useState('dashboard');
 
@@ -37,7 +37,14 @@ export default function App() {
           >
             <LayoutDashboard className="w-5 h-5" />
           </button>
-          <button className="text-muted hover:text-primary transition-colors border-l-2 border-transparent w-full flex justify-center py-2" title="Upload">
+          <button 
+            className="text-muted hover:text-primary transition-colors border-l-2 border-transparent w-full flex justify-center py-2" 
+            title="Upload"
+            onClick={() => {
+              reset();
+              setActiveView('dashboard');
+            }}
+          >
             <Upload className="w-5 h-5" />
           </button>
           <button className="text-muted hover:text-primary transition-colors border-l-2 border-transparent w-full flex justify-center py-2" title="Users">
